@@ -1,0 +1,76 @@
+<script type="text/x-red" data-template-name="indigo-actiongroup">
+  <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+      <label for="node-input-connection"> Connection</label>
+      <input type="select" id="node-input-connection" placeholder="Connection">
+  </div>
+  <div class="form-row">
+      <label for="node-input-group"><i class="icon-tag"></i> Group</label>
+      <input type="text" id="node-input-group" placeholder="Group">
+  </div>
+</script>
+
+<script type="text/javascript">
+
+var valuescene = undefined;
+
+function prepareIndigoGroupEditor() {
+
+  // Get initial value
+  valueGroup = $('#node-input-group').val();
+
+  // Bind to the connection list
+  $("#node-input-connection").change(loadIndigoGroups);
+
+}
+
+function loadIndigoGroups(listener){
+
+  var valueconnection = $('#node-input-connection').val();
+
+  $("#node-input-group").replaceWith('<select id="node-input-group" name="node-input-group" style="width: 250px;">');
+  $('#node-input-group').find('option').remove();
+
+  $.ajax({
+    url: "indigo/actiongroups/" + valueconnection,
+    success: function(data) {
+    var data=JSON.parse(data);
+
+    for (var i=0; i < data.length; i++) {
+      var groupDetail = data[i];
+      var groupName = groupDetail.name;
+      var groupPath = groupDetail.restURL;
+      $('#node-input-group').find('option').end().append('<option value="'+groupPath+'">'+groupName+'</option>');
+    }
+    $('#node-input-group').val(valueGroup);
+    if (typeof(listener)!=="undefined"){
+      listener;
+    }
+   }
+  });
+};
+
+    RED.nodes.registerType('indigo-actiongroup',{
+        category: 'indigo',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+            group: {value:"", required:true },
+            connection: {value: "", type: "indigo-connection"}
+        },
+        inputs:1,
+        outputs:2,
+        icon: "indigoicon.png",
+        label: function() {
+            return this.name || "execute group " + this.group;
+        },
+        paletteLabel: function() {
+          return "execute group";
+        },
+        oneditprepare: prepareIndigoGroupEditor
+    });
+
+</script>

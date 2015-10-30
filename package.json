@@ -1,0 +1,14 @@
+{
+  "name": "@alistairg/node-red-contrib-indigo",
+  "version": "0.0.1",
+  "description": "Interface to execute Indigo action groups",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alistair Galbraith <npm@alistairs.net>",
+  "license": "ISC",
+  "dependencies": {
+    "needle": "^0.10.0"
+  }
+}
